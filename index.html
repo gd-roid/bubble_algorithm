@@ -184,13 +184,15 @@
               c: {
                 food: [
                   `${query} 먹고 운동 성과 높이기`,
-                  `운동 전후 ${query} 섭취법`,
-                  `${query}로 근육 키우기`,
-                  `${query} 다이어트 식단`,
-                  `${query} 먹으면서 살빼는 법`,
-                  `운동할 때 ${query} 먹어도 될까?`,
-                  `${query}의 운동 효과 극대화`,
-                  `프로 선수들의 ${query} 식단`
+                  `운동 전후 ${query} 섭취 타이밍`,
+                  `${query}의 운동 효과 - 영양 성분 분석`,
+                  `${query} 다이어트 식단에 포함하기`,
+                  `${query} 먹으면서 건강 관리하는 법`,
+                  `운동할 때 ${query}, 언제 먹을까?`,
+                  `${query}가 근육에 미치는 영향`,
+                  `프로 선수들의 ${query} 섭취 비법`,
+                  `${query} 먹고 운동하면 좋은 이유`,
+                  `${query}로 체력 보충하는 방법`
                 ],
                 activity: [
                   `${query} 하면서 체력 관리하는 법`,
@@ -213,7 +215,6 @@
                   `${query} 관련 체력 훈련법`,
                   `${query}를 활용한 운동 팁`,
                   `선수들의 ${query} 트레이닝 비법`,
-                  `${query}로 운동 효율 2배 높이기`,
                   `${query} 운동 루틴 완벽 가이드`,
                   `${query} 활용 전신 운동`,
                   `${query} 코어 트레이닝 루틴`,
@@ -233,7 +234,7 @@
             };
 
             const objectKeywords = ['고양이', '강아지', '꽃', '나무', '자동차', '로봇', '공', '의자', '책', '핸드폰', '컴퓨터', '우산', '신발', '가방', '시계'];
-            const foodKeywords = ['밥', '초콜릿', '빵', '과자', '음식', '요리', '치킨', '피자', '떡', '과일', '야채', '고기', '생선', '우유', '물', '커피', '라면', '케이크'];
+            const foodKeywords = ['밥', '초콜릿', '빵', '과자', '음식', '요리', '치킨', '피자', '떡', '과일', '야채', '고기', '생선', '우유', '물', '커피', '라면', '케이크', '가지', '토마토', '바나나', '사과'];
             const livingKeywords = ['고양이', '강아지', '동물', '식물', '나무', '꽃', '새', '물고기', '곤충', '사람', '미생물', '세포', '박테리아', '바이러스'];
             const physicalKeywords = ['로봇', '자동차', '비행기', '기계', '장난감', '가구', '건물', '폐품', '의자', '책상', '선풍기', '시계'];
             const activityKeywords = ['게임', '영화', '독서', '음악', '공부', '여행', '캠핑', '등산', '수영', '달리기', '유튜브', '인터넷', '쇼핑'];
@@ -344,7 +345,7 @@
               </div>
               <div className="p-4">
                 <h3 className="font-bold text-gray-800 mb-2" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{video.title}</h3>
-                <div className="flex justify-between text-sm text-gray-600" style={{fontSize: '0.875rem'}}>
+                <div className="flex justify-between text-sm text-gray-600">
                   <span>조회수 {video.views}</span>
                   <span>{video.time}</span>
                 </div>
@@ -352,93 +353,119 @@
             </div>
           );
 
-          return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-purple-100 to-blue-100' },
-            React.createElement('header', { className: 'bg-white shadow-md p-4' },
-              React.createElement('div', { className: 'max-w-7xl mx-auto flex items-center justify-between' },
-                React.createElement('div', { className: 'flex items-center gap-2' },
-                  React.createElement(SearchIcon),
-                  React.createElement('h1', { className: 'text-2xl font-bold text-purple-600' }, '언빌리버블TV')
-                ),
-                React.createElement('div', { className: 'flex items-center gap-4 flex-1 max-w-2xl mx-8' },
-                  React.createElement('input', {
-                    type: 'text',
-                    value: searchQuery,
-                    onChange: (e) => setSearchQuery(e.target.value),
-                    onKeyPress: (e) => e.key === 'Enter' && handleSearch(),
-                    placeholder: '검색어를 입력하세요 (예: 고양이, 환경, 전기차, 오리)',
-                    className: 'flex-1 px-4 py-2 border-2 border-gray-300 rounded-full focus:outline-none focus:border-purple-500'
-                  }),
-                  React.createElement('button', {
-                    onClick: handleSearch,
-                    className: 'bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors'
-                  }, React.createElement(SearchIcon))
-                ),
-                React.createElement('div', { className: 'flex gap-2' },
-                  Object.entries(students).map(([key, student]) =>
-                    React.createElement('button', {
-                      key: key,
-                      onClick: () => handleStudentClick(key),
-                      className: `${student.color} text-white px-4 py-2 rounded-full font-bold hover:opacity-90 transition-opacity`
-                    }, `${student.emoji} ${student.name}`)
-                  )
-                )
-              )
-            ),
-            React.createElement('main', { className: 'max-w-7xl mx-auto p-8' },
-              !selectedStudent && !showResults && React.createElement('div', { className: 'text-center py-20' },
-                React.createElement('h2', { className: 'text-4xl font-bold text-gray-800 mb-4' }, '알고리즘 추천 시스템 데모'),
-                React.createElement('p', { className: 'text-xl text-gray-600 mb-8' }, '학생을 선택하거나 검색어를 입력하여 맞춤형 추천을 확인하세요'),
-                React.createElement('div', { className: 'grid grid-cols-3 gap-8 mt-12' },
-                  Object.entries(students).map(([key, student]) =>
-                    React.createElement('div', {
-                      key: key,
-                      onClick: () => handleStudentClick(key),
-                      className: `${student.color} p-8 rounded-2xl text-white cursor-pointer transform hover:scale-105 transition-transform`
-                    },
-                      React.createElement('div', { className: 'text-6xl mb-4' }, student.emoji),
-                      React.createElement('h3', { className: 'text-2xl font-bold mb-2' }, student.name),
-                      React.createElement('p', { className: 'text-lg' }, `관심사: ${student.interest}`)
-                    )
-                  )
-                )
-              ),
-              selectedStudent && React.createElement('div', null,
-                React.createElement('div', { className: 'mb-8' },
-                  React.createElement('h2', { className: 'text-3xl font-bold text-gray-800 mb-2' },
-                    `${students[selectedStudent].emoji} ${students[selectedStudent].name}의 추천 영상`
-                  ),
-                  React.createElement('p', { className: 'text-lg text-gray-600' },
-                    `${students[selectedStudent].interest}에 관심이 많은 ${students[selectedStudent].name}을 위한 맞춤 추천`
-                  )
-                ),
-                React.createElement('div', { className: 'grid grid-cols-3 gap-6' },
-                  students[selectedStudent].mainVideos.map((video, idx) =>
-                    React.createElement(VideoCard, { key: idx, video: video, studentColor: students[selectedStudent].color })
-                  )
-                )
-              ),
-              showResults && React.createElement('div', null,
-                React.createElement('h2', { className: 'text-3xl font-bold text-gray-800 mb-2' }, `"${searchQuery}" 검색 결과 - 학생별 맞춤 추천`),
-                React.createElement('p', { className: 'text-lg text-gray-600 mb-8' }, '같은 검색어도 각 학생의 관심사에 따라 다른 영상이 추천됩니다'),
-                Object.entries(students).map(([key, student]) =>
-                  React.createElement('div', { key: key, className: 'mb-12' },
-                    React.createElement('div', { className: 'flex items-center gap-3 mb-4' },
-                      React.createElement('span', { className: 'text-3xl' }, student.emoji),
-                      React.createElement('h3', { className: 'text-2xl font-bold text-gray-800' }, `${student.name} (${student.interest} 관심사 반영)`)
-                    ),
-                    React.createElement('div', { className: 'grid grid-cols-4 gap-4' },
-                      generatedResults[key]?.map((video, idx) =>
-                        React.createElement(VideoCard, { key: idx, video: video, studentColor: student.color })
-                      )
-                    )
-                  )
-                )
-              )
-            )
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100">
+              <header className="bg-white shadow-md p-4">
+                <div className="max-w-7xl mx-auto flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <SearchIcon />
+                    <h1 className="text-2xl font-bold text-purple-600">언빌리버블TV</h1>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 flex-1 max-w-2xl mx-8">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                      placeholder="검색어를 입력하세요 (예: 고양이, 환경, 전기차, 오리)"
+                      className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-full focus:outline-none focus:border-purple-500"
+                    />
+                    <button
+                      onClick={handleSearch}
+                      className="bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors"
+                    >
+                      <SearchIcon />
+                    </button>
+                  </div>
+
+                  <div className="flex gap-2">
+                    {Object.entries(students).map(([key, student]) => (
+                      <button
+                        key={key}
+                        onClick={() => handleStudentClick(key)}
+                        className={`${student.color} text-white px-4 py-2 rounded-full font-bold hover:opacity-90 transition-opacity`}
+                      >
+                        {student.emoji} {student.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </header>
+
+              <main className="max-w-7xl mx-auto p-8">
+                {!selectedStudent && !showResults && (
+                  <div className="text-center py-20">
+                    <h2 className="text-4xl font-bold text-gray-800 mb-4">알고리즘 추천 시스템 데모</h2>
+                    <p className="text-xl text-gray-600 mb-8">
+                      학생을 선택하거나 검색어를 입력하여 맞춤형 추천을 확인하세요
+                    </p>
+                    <div className="grid grid-cols-3 gap-8 mt-12">
+                      {Object.entries(students).map(([key, student]) => (
+                        <div
+                          key={key}
+                          onClick={() => handleStudentClick(key)}
+                          className={`${student.color} p-8 rounded-2xl text-white cursor-pointer transform hover:scale-105 transition-transform`}
+                        >
+                          <div className="text-6xl mb-4">{student.emoji}</div>
+                          <h3 className="text-2xl font-bold mb-2">{student.name}</h3>
+                          <p className="text-lg">관심사: {student.interest}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedStudent && (
+                  <div>
+                    <div className="mb-8">
+                      <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                        {students[selectedStudent].emoji} {students[selectedStudent].name}의 추천 영상
+                      </h2>
+                      <p className="text-lg text-gray-600">
+                        {students[selectedStudent].interest}에 관심이 많은 {students[selectedStudent].name}을 위한 맞춤 추천
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-6">
+                      {students[selectedStudent].mainVideos.map((video, idx) => (
+                        <VideoCard key={idx} video={video} studentColor={students[selectedStudent].color} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {showResults && (
+                  <div>
+                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                      "{searchQuery}" 검색 결과 - 학생별 맞춤 추천
+                    </h2>
+                    <p className="text-lg text-gray-600 mb-8">
+                      같은 검색어도 각 학생의 관심사에 따라 다른 영상이 추천됩니다
+                    </p>
+                    
+                    {Object.entries(students).map(([key, student]) => (
+                      <div key={key} className="mb-12">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">{student.emoji}</span>
+                          <h3 className="text-2xl font-bold text-gray-800">
+                            {student.name} ({student.interest} 관심사 반영)
+                          </h3>
+                        </div>
+                        <div className="grid grid-cols-4 gap-4">
+                          {generatedResults[key]?.map((video, idx) => (
+                            <VideoCard key={idx} video={video} studentColor={student.color} />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </main>
+            </div>
           );
         };
 
-        ReactDOM.render(React.createElement(AlgorithmDemo), document.getElementById('root'));
+        ReactDOM.render(<AlgorithmDemo />, document.getElementById('root'));
     </script>
 </body>
 </html>

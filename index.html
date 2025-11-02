@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알고리즘 추천 시스템 데모</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const AlgorithmDemo = () => {
+          const [selectedStudent, setSelectedStudent] = useState(null);
+          const [searchQuery, setSearchQuery] = useState('');
+          const [showResults, setShowResults] = useState(false);
+          const [generatedResults, setGeneratedResults] = useState({});
+
+          const students = {
+            a: {
+              name: 'A학생',
+              interest: '만들기',
+              color: 'bg-pink-500',
+              emoji: '🎨',
+              keywords: ['DIY', '만들기', '공예', '제작', '손으로', '직접'],
+              mainVideos: [
+                { title: '5분 컷! 귀여운 슬라임 만들기', views: '125만회', time: '15:20', category: '만들기' },
+                { title: '종이접기로 만드는 입체 동물원', views: '89만회', time: '12:45', category: '만들기' },
+                { title: '집에 있는 폐품으로 로봇 만들기 대작전', views: '203만회', time: '18:30', category: '만들기' },
+                { title: '나만의 비즈 액세서리 공방 ASMR', views: '156만회', time: '14:15', category: '만들기' },
+                { title: '초보도 OK! 3D펜 피규어 만들기', views: '178만회', time: '20:10', category: '만들기' },
+                { title: '레진아트 입문 - 갤럭시 키링 만들기', views: '142만회', time: '16:50', category: '만들기' },
+                { title: '다이소 재료로 방 꾸미기 소품 제작', views: '167만회', time: '13:30', category: '만들기' },
+                { title: '손그림 일러스트 그리는 법 [초보용]', views: '134만회', time: '19:15', category: '만들기' },
+                { title: '업사이클링 아이디어 TOP 10', views: '198만회', time: '22:40', category: '만들기' }
+              ]
+            },
+            b: {
+              name: 'B학생',
+              interest: '생물',
+              color: 'bg-blue-500',
+              emoji: '🔬',
+              keywords: ['생물학', '과학', '실험', '관찰', '연구', '생태'],
+              mainVideos: [
+                { title: '현미경으로 본 미생물의 놀라운 세계', views: '98만회', time: '22:15', category: '생물' },
+                { title: '광합성 실험 - 식물은 어떻게 숨쉴까?', views: '115만회', time: '18:40', category: '생물' },
+                { title: '세포 분열 타임랩스 영상 [4K]', views: '87만회', time: '25:30', category: '생물' },
+                { title: '동물의 분류 - 척추동물 vs 무척추동물', views: '132만회', time: '19:20', category: '생물' },
+                { title: 'DNA 추출 실험 따라하기 [집에서도 가능]', views: '145만회', time: '17:55', category: '생물' },
+                { title: '생태계 먹이사슬의 비밀', views: '109만회', time: '21:10', category: '생물' },
+                { title: '진화론 쉽게 이해하기 - 다윈의 발견', views: '176만회', time: '24:30', category: '생물' },
+                { title: '박테리아는 어떻게 생존할까?', views: '123만회', time: '16:45', category: '생물' },
+                { title: '생물 다양성이 중요한 이유', views: '156만회', time: '20:05', category: '생물' }
+              ]
+            },
+            c: {
+              name: 'C학생',
+              interest: '운동',
+              color: 'bg-purple-500',
+              emoji: '⚽',
+              keywords: ['운동', '스포츠', '훈련', '건강', '체력', '경기'],
+              mainVideos: [
+                { title: '하루 10분 전신 운동 루틴 [초보 가능]', views: '234만회', time: '15:30', category: '운동' },
+                { title: '농구 슛 성공률 2배 높이는 법', views: '189만회', time: '18:20', category: '운동' },
+                { title: '홈트 30일 챌린지 - 복근 만들기', views: '267만회', time: '20:45', category: '운동' },
+                { title: '배드민턴 스매싱 기술 마스터하기', views: '145만회', time: '14:15', category: '운동' },
+                { title: '달리기 자세 교정으로 기록 단축!', views: '198만회', time: '16:40', category: '운동' },
+                { title: '아침 요가 10분 - 하루를 시작하는 스트레칭', views: '221만회', time: '25:10', category: '운동' },
+                { title: '프로 축구선수의 드리블 훈련 루틴', views: '276만회', time: '19:50', category: '운동' },
+                { title: '운동 전후 스트레칭 완벽 가이드', views: '156만회', time: '17:20', category: '운동' },
+                { title: '맨몸 운동으로 근육 키우는 법', views: '203만회', time: '22:15', category: '운동' }
+              ]
+            }
+          };
+
+          const generateVideoTitle = (query, studentKey) => {
+            const allTemplates = {
+              a: {
+                object: [
+                  `${query} 모양 점토 만들기 DIY`,
+                  `종이접기로 ${query} 접는 법`,
+                  `${query} 그림 그리기 초보 가이드`,
+                  `나만의 ${query} 굿즈 제작`,
+                  `${query} 스티커 직접 만들기`,
+                  `레진으로 ${query} 키링 만들기`,
+                  `${query} 일러스트 그리는 법`,
+                  `비즈로 ${query} 팔찌 만들기`,
+                  `5분만에 완성하는 ${query} 만들기`,
+                  `${query} 손그림 그리기 ASMR`,
+                  `초보도 쉽게! ${query} 미니어처 만들기`,
+                  `${query} 캐릭터 그리기 팁 대공개`
+                ],
+                physical: [
+                  `폐품으로 ${query} 만들기 도전`,
+                  `${query} 직접 조립하기`,
+                  `${query} 수리하는 법`,
+                  `${query} 개조 프로젝트`,
+                  `고장난 ${query} 살리기`,
+                  `${query} 업사이클링 아이디어`
+                ],
+                theme: [
+                  `${query} 테마 방 꾸미기 아이디어`,
+                  `${query} 컨셉 DIY 소품 만들기`,
+                  `${query} 느낌의 수공예품`,
+                  `${query} 스타일 인테리어 꾸미기`,
+                  `${query} 분위기 소품 제작`,
+                  `${query} 무드 다이어리 꾸미기`,
+                  `${query} 감성 굿즈 만들기`,
+                  `${query}를 표현한 아트워크`,
+                  `${query} 콜라주 아트 튜토리얼`,
+                  `${query} 테마 스크랩북 만들기`
+                ],
+                nature: [
+                  `${query} 그림 그리기 수채화 기법`,
+                  `${query} 풍경화 그리는 법`,
+                  `${query} 사진 찍는 법 [초보 가이드]`,
+                  `${query} 일러스트 채색 팁`,
+                  `${query} 그림으로 감성 표현하기`,
+                  `${query} 테마 DIY 데코`,
+                  `${query} 배경 그리기 강좌`,
+                  `${query} 스케치 연습하기`
+                ]
+              },
+              b: {
+                concrete: [
+                  `${query}의 구조와 기능 분석`,
+                  `${query} 관찰 실험 - 현미경으로 보기`,
+                  `${query}의 생명 과학 원리`,
+                  `${query}에서 발견되는 생물 다양성`,
+                  `${query} 해부학적 특징`,
+                  `${query}는 어떻게 작동할까?`,
+                  `${query}의 놀라운 메커니즘`,
+                  `${query} 세포 수준 분석`
+                ],
+                abstract: [
+                  `${query}에 대한 과학적 설명`,
+                  `${query}에 숨겨진 과학의 비밀`,
+                  `${query}의 신비로운 원리`,
+                  `${query} 관련 자연 다큐멘터리`,
+                  `과학으로 보는 ${query}의 세계`,
+                  `${query}를 과학적으로 증명하다`,
+                  `${query}의 생물학적 의미`,
+                  `${query} 현상의 과학적 이해`,
+                  `${query} - 자연의 법칙`,
+                  `${query}에 대한 실험적 접근`
+                ],
+                living: [
+                  `${query}의 진화 과정`,
+                  `${query} 생태계 먹이사슬 연구`,
+                  `${query}의 생존 전략`,
+                  `${query} 행동 패턴 분석`,
+                  `${query}의 번식과 성장`,
+                  `${query} 서식지 탐구`
+                ],
+                environment: [
+                  `${query}와 환경의 상호작용`,
+                  `${query}의 환경적 영향 연구`,
+                  `${query}가 생태계에 미치는 영향`,
+                  `${query} 환경 보호의 중요성`
+                ],
+                nature: [
+                  `${query}의 과학적 원리`,
+                  `${query} 현상은 왜 일어날까?`,
+                  `${query}에 대한 자연과학 설명`,
+                  `${query} 다큐멘터리 - 지구의 신비`,
+                  `${query}를 관찰하는 방법`,
+                  `${query}의 형성 과정`,
+                  `${query}이 만들어지는 원리`,
+                  `${query} 관련 기상학 강의`
+                ]
+              },
+              c: {
+                food: [
+                  `${query} 먹고 운동 성과 높이기`,
+                  `운동 전후 ${query} 섭취법`,
+                  `${query}로 근육 키우기`,
+                  `${query} 다이어트 식단`,
+                  `${query} 먹으면서 살빼는 법`,
+                  `운동할 때 ${query} 먹어도 될까?`,
+                  `${query}의 운동 효과 극대화`,
+                  `프로 선수들의 ${query} 식단`
+                ],
+                activity: [
+                  `${query} 하면서 체력 관리하는 법`,
+                  `${query} 좋아하는 사람을 위한 운동`,
+                  `${query} 보면서 홈트레이닝`,
+                  `${query} 후 스트레칭 루틴`,
+                  `${query} 중독 탈출! 운동으로 극복`,
+                  `${query}하다 지친 몸 회복 운동`,
+                  `${query} 시간 줄이고 운동 시간 늘리기`
+                ],
+                theme: [
+                  `${query} 감성 요가 플로우`,
+                  `${query} 무드 러닝 플레이리스트`,
+                  `${query}를 이기는 운동 루틴`,
+                  `${query} 극복 운동 챌린지`,
+                  `${query} 분위기 홈트레이닝`,
+                  `${query} 느낌의 스트레칭`
+                ],
+                general: [
+                  `${query} 관련 체력 훈련법`,
+                  `${query}를 활용한 운동 팁`,
+                  `선수들의 ${query} 트레이닝 비법`,
+                  `${query}로 운동 효율 2배 높이기`,
+                  `${query} 운동 루틴 완벽 가이드`,
+                  `${query} 활용 전신 운동`,
+                  `${query} 코어 트레이닝 루틴`,
+                  `${query} 맨몸 운동 10분`
+                ],
+                nature: [
+                  `${query} 속에서 러닝하기`,
+                  `${query} 보며 아침 요가`,
+                  `${query} 아래에서 운동하기`,
+                  `자연 속 운동 - ${query} 트레킹`,
+                  `${query} 감상하며 스트레칭`,
+                  `야외 운동 - ${query} 러닝 코스`,
+                  `${query} 배경으로 홈트`,
+                  `${query} 명상 요가`
+                ]
+              }
+            };
+
+            const objectKeywords = ['고양이', '강아지', '꽃', '나무', '자동차', '로봇', '공', '의자', '책', '핸드폰', '컴퓨터', '우산', '신발', '가방', '시계'];
+            const foodKeywords = ['밥', '초콜릿', '빵', '과자', '음식', '요리', '치킨', '피자', '떡', '과일', '야채', '고기', '생선', '우유', '물', '커피', '라면', '케이크'];
+            const livingKeywords = ['고양이', '강아지', '동물', '식물', '나무', '꽃', '새', '물고기', '곤충', '사람', '미생물', '세포', '박테리아', '바이러스'];
+            const physicalKeywords = ['로봇', '자동차', '비행기', '기계', '장난감', '가구', '건물', '폐품', '의자', '책상', '선풍기', '시계'];
+            const activityKeywords = ['게임', '영화', '독서', '음악', '공부', '여행', '캠핑', '등산', '수영', '달리기', '유튜브', '인터넷', '쇼핑'];
+            const environmentKeywords = ['폐품', '재활용', '환경', '쓰레기', '분리수거', '에너지', '오염', '온난화'];
+            const abstractKeywords = ['과거', '미래', '현재', '사랑', '우정', '행복', '슬픔', '꿈', '희망', '평화', '자유', '역사', '시간', '추억', '감성'];
+            const natureKeywords = ['하늘', '바다', '산', '강', '호수', '구름', '별', '달', '태양', '비', '눈', '바람', '계절', '봄', '여름', '가을', '겨울', '숲', '들판'];
+            
+            let selectedTemplates = [];
+            
+            if (studentKey === 'a') {
+              const isAbstract = abstractKeywords.some(k => query.includes(k));
+              const isPhysical = physicalKeywords.some(k => query.includes(k));
+              const isNature = natureKeywords.some(k => query.includes(k));
+              
+              if (isNature) {
+                selectedTemplates = [...allTemplates.a.nature, ...allTemplates.a.theme.slice(0, 2)];
+              } else if (isAbstract) {
+                selectedTemplates = allTemplates.a.theme;
+              } else if (isPhysical) {
+                selectedTemplates = [...allTemplates.a.physical, ...allTemplates.a.object.slice(0, 3), ...allTemplates.a.theme.slice(0, 2)];
+              } else {
+                selectedTemplates = [...allTemplates.a.object, ...allTemplates.a.theme.slice(0, 3)];
+              }
+            } else if (studentKey === 'b') {
+              const isLiving = livingKeywords.some(k => query.includes(k));
+              const isEnvironment = environmentKeywords.some(k => query.includes(k));
+              const isAbstract = abstractKeywords.some(k => query.includes(k));
+              const isNature = natureKeywords.some(k => query.includes(k));
+              
+              if (isNature) {
+                selectedTemplates = [...allTemplates.b.nature, ...allTemplates.b.abstract.slice(0, 2)];
+              } else if (isAbstract) {
+                selectedTemplates = allTemplates.b.abstract;
+              } else if (isLiving) {
+                selectedTemplates = [...allTemplates.b.concrete, ...allTemplates.b.living];
+              } else if (isEnvironment) {
+                selectedTemplates = [...allTemplates.b.abstract, ...allTemplates.b.environment];
+              } else {
+                selectedTemplates = [...allTemplates.b.concrete, ...allTemplates.b.abstract.slice(0, 3)];
+              }
+            } else if (studentKey === 'c') {
+              const isFood = foodKeywords.some(k => query.includes(k));
+              const isActivity = activityKeywords.some(k => query.includes(k));
+              const isAbstract = abstractKeywords.some(k => query.includes(k));
+              const isNature = natureKeywords.some(k => query.includes(k));
+              
+              if (isNature) {
+                selectedTemplates = [...allTemplates.c.nature, ...allTemplates.c.general.slice(0, 2)];
+              } else if (isAbstract) {
+                selectedTemplates = [...allTemplates.c.theme, ...allTemplates.c.general.slice(0, 2)];
+              } else if (isFood) {
+                selectedTemplates = [...allTemplates.c.food, ...allTemplates.c.general];
+              } else if (isActivity) {
+                selectedTemplates = [...allTemplates.c.activity, ...allTemplates.c.general.slice(0, 2)];
+              } else {
+                selectedTemplates = [...allTemplates.c.general, ...allTemplates.c.theme.slice(0, 2)];
+              }
+            }
+
+            const randomTemplates = selectedTemplates.sort(() => Math.random() - 0.5).slice(0, 4);
+            return randomTemplates;
+          };
+
+          const generateResults = (query) => {
+            const results = {};
+            
+            Object.keys(students).forEach(key => {
+              const titles = generateVideoTitle(query, key);
+              results[key] = titles.map((title, idx) => ({
+                title: title,
+                views: `${Math.floor(Math.random() * 200 + 80)}만회`,
+                time: `${Math.floor(Math.random() * 20 + 10)}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+                category: students[key].interest
+              }));
+            });
+
+            return results;
+          };
+
+          const handleSearch = () => {
+            if (searchQuery.trim()) {
+              const results = generateResults(searchQuery);
+              setGeneratedResults(results);
+              setShowResults(true);
+              setSelectedStudent(null);
+            }
+          };
+
+          const handleStudentClick = (student) => {
+            setSelectedStudent(student);
+            setShowResults(false);
+            setSearchQuery('');
+          };
+
+          const SearchIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          );
+
+          const VideoCard = ({ video, studentColor }) => (
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+              <div className={`${studentColor} h-40 flex items-center justify-center text-6xl`}>
+                {video.category === '만들기' && '🎨'}
+                {video.category === '생물' && '🔬'}
+                {video.category === '운동' && '⚽'}
+              </div>
+              <div className="p-4">
+                <h3 className="font-bold text-gray-800 mb-2" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{video.title}</h3>
+                <div className="flex justify-between text-sm text-gray-600" style={{fontSize: '0.875rem'}}>
+                  <span>조회수 {video.views}</span>
+                  <span>{video.time}</span>
+                </div>
+              </div>
+            </div>
+          );
+
+          return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-purple-100 to-blue-100' },
+            React.createElement('header', { className: 'bg-white shadow-md p-4' },
+              React.createElement('div', { className: 'max-w-7xl mx-auto flex items-center justify-between' },
+                React.createElement('div', { className: 'flex items-center gap-2' },
+                  React.createElement(SearchIcon),
+                  React.createElement('h1', { className: 'text-2xl font-bold text-purple-600' }, '언빌리버블TV')
+                ),
+                React.createElement('div', { className: 'flex items-center gap-4 flex-1 max-w-2xl mx-8' },
+                  React.createElement('input', {
+                    type: 'text',
+                    value: searchQuery,
+                    onChange: (e) => setSearchQuery(e.target.value),
+                    onKeyPress: (e) => e.key === 'Enter' && handleSearch(),
+                    placeholder: '검색어를 입력하세요 (예: 고양이, 환경, 전기차, 오리)',
+                    className: 'flex-1 px-4 py-2 border-2 border-gray-300 rounded-full focus:outline-none focus:border-purple-500'
+                  }),
+                  React.createElement('button', {
+                    onClick: handleSearch,
+                    className: 'bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition-colors'
+                  }, React.createElement(SearchIcon))
+                ),
+                React.createElement('div', { className: 'flex gap-2' },
+                  Object.entries(students).map(([key, student]) =>
+                    React.createElement('button', {
+                      key: key,
+                      onClick: () => handleStudentClick(key),
+                      className: `${student.color} text-white px-4 py-2 rounded-full font-bold hover:opacity-90 transition-opacity`
+                    }, `${student.emoji} ${student.name}`)
+                  )
+                )
+              )
+            ),
+            React.createElement('main', { className: 'max-w-7xl mx-auto p-8' },
+              !selectedStudent && !showResults && React.createElement('div', { className: 'text-center py-20' },
+                React.createElement('h2', { className: 'text-4xl font-bold text-gray-800 mb-4' }, '알고리즘 추천 시스템 데모'),
+                React.createElement('p', { className: 'text-xl text-gray-600 mb-8' }, '학생을 선택하거나 검색어를 입력하여 맞춤형 추천을 확인하세요'),
+                React.createElement('div', { className: 'grid grid-cols-3 gap-8 mt-12' },
+                  Object.entries(students).map(([key, student]) =>
+                    React.createElement('div', {
+                      key: key,
+                      onClick: () => handleStudentClick(key),
+                      className: `${student.color} p-8 rounded-2xl text-white cursor-pointer transform hover:scale-105 transition-transform`
+                    },
+                      React.createElement('div', { className: 'text-6xl mb-4' }, student.emoji),
+                      React.createElement('h3', { className: 'text-2xl font-bold mb-2' }, student.name),
+                      React.createElement('p', { className: 'text-lg' }, `관심사: ${student.interest}`)
+                    )
+                  )
+                )
+              ),
+              selectedStudent && React.createElement('div', null,
+                React.createElement('div', { className: 'mb-8' },
+                  React.createElement('h2', { className: 'text-3xl font-bold text-gray-800 mb-2' },
+                    `${students[selectedStudent].emoji} ${students[selectedStudent].name}의 추천 영상`
+                  ),
+                  React.createElement('p', { className: 'text-lg text-gray-600' },
+                    `${students[selectedStudent].interest}에 관심이 많은 ${students[selectedStudent].name}을 위한 맞춤 추천`
+                  )
+                ),
+                React.createElement('div', { className: 'grid grid-cols-3 gap-6' },
+                  students[selectedStudent].mainVideos.map((video, idx) =>
+                    React.createElement(VideoCard, { key: idx, video: video, studentColor: students[selectedStudent].color })
+                  )
+                )
+              ),
+              showResults && React.createElement('div', null,
+                React.createElement('h2', { className: 'text-3xl font-bold text-gray-800 mb-2' }, `"${searchQuery}" 검색 결과 - 학생별 맞춤 추천`),
+                React.createElement('p', { className: 'text-lg text-gray-600 mb-8' }, '같은 검색어도 각 학생의 관심사에 따라 다른 영상이 추천됩니다'),
+                Object.entries(students).map(([key, student]) =>
+                  React.createElement('div', { key: key, className: 'mb-12' },
+                    React.createElement('div', { className: 'flex items-center gap-3 mb-4' },
+                      React.createElement('span', { className: 'text-3xl' }, student.emoji),
+                      React.createElement('h3', { className: 'text-2xl font-bold text-gray-800' }, `${student.name} (${student.interest} 관심사 반영)`)
+                    ),
+                    React.createElement('div', { className: 'grid grid-cols-4 gap-4' },
+                      generatedResults[key]?.map((video, idx) =>
+                        React.createElement(VideoCard, { key: idx, video: video, studentColor: student.color })
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          );
+        };
+
+        ReactDOM.render(React.createElement(AlgorithmDemo), document.getElementById('root'));
+    </script>
+</body>
+</html>
